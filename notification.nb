@@ -1,0 +1,46 @@
+With[
+ {bell = Import["Desktop/bell.png"], 
+  email = Import["Desktop/email.png"]},
+(* Note I created two .png pictures for my email and alarm buttons that 
+are saved on my desktop. I am using Mathematica's built in "Import" 
+function here. *)
+ ir[icon_] := ImageResize[icon, {16, 16}];
+(* Resize function to make the icons look uniform and pretty. *)
+ SetOptions[
+  EvaluationNotebook[],
+(* The function "DockedCells" below created a toolbar at the top of your 
+Mathematica notebook. Below I define what the button should look like, what 
+actions should occur if the user clicks on a button, and when exactly the 
+actions should occur (namely after the cell has been evaluated). I use 
+Mathematica's built in "SendMail" function. *)
+  DockedCells -> Cell[BoxData[ToBoxes[Row[
+           {Button[ir[bell], 
+              Do[EmitSound[Sound[SoundNote[]]]; Pause[0.2], {1}], 
+              Method -> "Queued", Appearance -> "Palette"],
+             Spacer[5],
+             Button[ir[email], SendMail[
+               "To" -> "username@gmail.com",
+               "Subject" -> "Finished processing!",
+               "Body" -> "",
+               "From" -> "username@gmail.com",
+               "Server" -> "smtp.gmail.com",
+               "UserName" -> "username@gmail.com",
+               "Password" -> Automatic,
+               "PortNumber" -> 587,
+               "EncryptionProtocol" -> "StartTLS"],
+              Method -> "Queued", Appearance -> "Palette"]
+             };
+           ];
+         ];
+       ];
+     ];
+  ];
+ ]
+ 
+ (* Instructions: Evaluate the whole cell first. Then hit the bell or email 
+button after you have begun to evaluate a cell. In the "Body" section of 
+the code you could export plots or movies to files and attach them to the 
+email. (Read documentation on "SendMail" and "Export" for more information.) 
+You can test the buttons out with the pause function below. *)
+
+Pause[10];
